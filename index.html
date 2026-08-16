@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>KODER SHOP — Premium Gaming Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0b0e14;
+      font-family: 'Inter', sans-serif;
+      color: #e8edf5;
+      padding: 0 0 80px 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      background: radial-gradient(circle at 20% 20%, #0d1a2b, #080b10);
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      max-width: 480px;
+      width: 100%;
+      background: rgba(12, 18, 28, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 36px 36px 0 0;
+      padding: 18px 16px 90px;
+      box-shadow: 0 0 60px rgba(0, 255, 255, 0.08), 0 0 120px rgba(0, 255, 255, 0.04);
+      border: 1px solid rgba(0, 255, 255, 0.08);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .cyber-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(rgba(0, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .scanline {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0) 4px);
+      pointer-events: none;
+      z-index: 1;
+    }
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    #falling-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .app-container, .header, .bottom-nav, .modal-box {
+      position: relative;
+      z-index: 2;
+    }
+
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: #080b10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease;
+    }
+    #loading.hide { opacity: 0; pointer-events: none; }
+    .loader-glow {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #00ffff;
+      text-shadow: 0 0 20px #00ffff, 0 0 60px #00ffff88;
+      animation: pulseGlow 1.6s infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% { opacity: 0.5; text-shadow: 0 0 10px #00ffff; }
+      100% { opacity: 1; text-shadow: 0 0 30px #00ffff, 0 0 90px #ff00ff88; }
+    }
+    .loader-ring {
+      width: 50px;
+      height: 50px;
+      border: 4px solid transparent;
+      border-top: 4px solid #00ffff;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-top: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* HEADER */
+    .header {
+      padding: 6px 0 14px;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.06);
+      position: relative;
+      text-align: center;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 10%;
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.25), transparent);
+    }
+    .brand-main {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #00ffff, #0088ff, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+      text-shadow: 0 0 40px rgba(0, 200, 255, 0.15), 0 0 80px rgba(0, 200, 255, 0.05);
+      animation: brandGlow 4s ease-in-out infinite;
+      position: relative;
+      display: inline-block;
+    }
+    @keyframes brandGlow {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.2); }
+    }
+    .brand-main .shine {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+      animation: shineMove 6s ease-in-out infinite;
+    }
+    @keyframes shineMove {
+      0% { left: -60%; }
+      50% { left: 120%; }
+      100% { left: -60%; }
+    }
+    .brand-sub {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 400;
+      color: #66c0dd;
+      letter-spacing: 4px;
+      margin-top: 2px;
+      opacity: 0.7;
+      text-shadow: 0 0 20px rgba(0, 200, 255, 0.05);
+    }
+    .header-status {
+      font-size: 0.55rem;
+      color: #66ffaa;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      letter-spacing: 1px;
+    }
+    .header-status .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #66ffaa;
+      border-radius: 50%;
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* LIVE STATS */
+    .live-stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 14px 0 16px;
+      padding: 0 2px;
+    }
+    .live-stat {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 10px 6px;
+      border: 1px solid rgba(0, 255, 255, 0.06);
+      text-align: center;
+      backdrop-filter: blur(4px);
+      transition: 0.3s;
+    }
+    .live-stat .stat-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #00ffff;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.08);
+      line-height: 1.2;
+      transition: 0.3s;
+    }
+    .live-stat .stat-label {
+      font-size: 0.5rem;
+      font-weight: 600;
+      color: #88aacc;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .live-stat .stat-dot {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      background: #66ffaa;
+      border-radius: 50%;
+      animation: pulseDot 2s ease-in-out infinite;
+      margin-right: 4px;
+    }
+    .live-stat .stat-sub {
+      font-size: 0.45rem;
+      color: #88aacc;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    /* TOOLBAR */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0 18px;
+    }
+    .search-box {
+      flex: 1 1 160px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(0, 255, 255, 0.12);
+      border-radius: 40px;
+      padding: 10px 18px;
+      backdrop-filter: blur(4px);
+      transition: 0.3s;
+    }
+    .search-box:focus-within {
+      border-color: rgba(0, 255, 255, 0.4);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+    }
+    .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #e0e6f0;
+      width: 100%;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .search-box input::placeholder {
+      color: #667a99;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .filter-btn {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid #1f2a3a;
+      color: #8aacc0;
+      padding: 6px 16px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: 0.25s;
+      backdrop-filter: blur(2px);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .filter-btn.active {
+      background: rgba(0, 255, 255, 0.08);
+      border-color: #00ffff;
+      color: #00ffff;
+      box-shadow: 0 0 24px rgba(0, 255, 255, 0.08);
+    }
+    .filter-btn:hover {
+      background: rgba(0, 255, 255, 0.04);
+    }
+
+    /* SECTIONS */
+    .game-section {
+      margin-bottom: 28px;
+      animation: fadeUp 0.4s ease;
+    }
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(16px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 4px 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.06);
+      position: relative;
+    }
+    .section-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(0,255,255,0.5), transparent);
+      animation: linePulse 3s ease-in-out infinite;
+    }
+    @keyframes linePulse {
+      0%, 100% { width: 40px; opacity: 0.5; }
+      50% { width: 80px; opacity: 1; }
+    }
+    .section-header .sec-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-header .sec-icon {
+      font-size: 1.1rem;
+      color: #00ffff;
+      opacity: 0.7;
+    }
+    .section-header .sec-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #d0e8ff;
+      letter-spacing: 1px;
+    }
+    .section-header .sec-count {
+      font-size: 0.6rem;
+      color: #88b0d0;
+      background: rgba(0,255,255,0.04);
+      padding: 2px 12px;
+      border-radius: 30px;
+      border: 1px solid rgba(0,255,255,0.06);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    /* PRODUCT GRID */
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* CARD */
+    .card {
+      background: rgba(16, 24, 38, 0.65);
+      backdrop-filter: blur(6px);
+      border-radius: 20px;
+      padding: 16px 10px 14px;
+      border: 1px solid rgba(0, 255, 255, 0.06);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-height: 120px;
+      justify-content: center;
+      position: relative;
+    }
+    .card:active {
+      transform: scale(0.94);
+    }
+    .card .badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: #ff00cc;
+      padding: 1px 10px;
+      border-radius: 30px;
+      font-size: 0.45rem;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 0 20px #ff00cc44;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .card .card-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: rgba(0, 255, 255, 0.04);
+      border: 1px solid rgba(0, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #00ffff;
+      margin-bottom: 8px;
+      transition: 0.3s;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.02);
+      flex-shrink: 0;
+    }
+    .card .card-icon-wrap i {
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+    }
+    .card .card-name {
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #eef4ff;
+      letter-spacing: 0.5px;
+      line-height: 1.3;
+      text-transform: uppercase;
+    }
+    .card .card-sub {
+      font-size: 0.55rem;
+      color: #88b0d0;
+      letter-spacing: 0.5px;
+      margin-top: 1px;
+      opacity: 0.6;
+    }
+    .card .card-platform {
+      margin-top: 6px;
+      font-size: 0.5rem;
+      font-weight: 700;
+      padding: 2px 12px;
+      border-radius: 30px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .card .card-platform.android {
+      color: #66ffaa;
+      background: rgba(0, 255, 100, 0.06);
+      border: 1px solid rgba(0, 255, 100, 0.08);
+    }
+    .card .card-platform.ios {
+      color: #66bbff;
+      border: 1px solid rgba(0, 150, 255, 0.12);
+      background: rgba(0, 150, 255, 0.04);
+    }
+    .card .card-platform.ios i {
+      margin-right: 4px;
+    }
+    .card .card-arrow {
+      font-size: 0.6rem;
+      color: #00ffff;
+      opacity: 0.2;
+      margin-top: 6px;
+      transition: 0.3s;
+    }
+    .card:hover .card-arrow {
+      opacity: 0.7;
+      transform: translateX(4px);
+    }
+    .card .card-status {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.4rem;
+      color: #66ffaa;
+      opacity: 0.4;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .card.active-card {
+      border-color: #00ffff;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.12), 0 0 80px rgba(0, 255, 255, 0.04);
+      background: rgba(0, 255, 255, 0.04);
+    }
+    .card.active-card .card-icon-wrap {
+      border-color: #00ffff;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.08);
+    }
+
+    /* DETAIL PANEL */
+    .detail-panel {
+      margin-top: 12px;
+      display: none;
+      animation: slideDown 0.35s ease;
+      grid-column: 1 / -1;
+    }
+    .detail-panel.open {
+      display: block;
+    }
+    @keyframes slideDown {
+      0% { opacity: 0; transform: translateY(-8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-wrapper {
+      background: rgba(8, 16, 28, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 16px 14px;
+      border: 1px solid rgba(0, 255, 255, 0.1);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+    .detail-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.06);
+    }
+    .detail-header .detail-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #b0e8ff;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    }
+    .detail-header .close-detail {
+      background: rgba(255,255,255,0.04);
+      border: none;
+      color: #88aacc;
+      padding: 4px 14px;
+      border-radius: 40px;
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid rgba(255,255,255,0.05);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .detail-header .close-detail:hover {
+      background: rgba(255,0,0,0.08);
+      border-color: #ff446688;
+      color: #ff6688;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .package-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 14px;
+      padding: 10px 14px;
+      border: 1px solid rgba(0, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: 0.2s;
+    }
+    .package-card:hover {
+      border-color: rgba(0, 255, 255, 0.1);
+    }
+    .package-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+    }
+    .package-label {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #d8e8ff;
+    }
+    .package-stock {
+      font-size: 0.55rem;
+      color: #88b0d0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .package-price {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #f0f8ff;
+      text-shadow: 0 0 20px rgba(0, 200, 255, 0.08);
+      line-height: 1.2;
+      margin: 0 10px;
+      min-width: 50px;
+      text-align: right;
+    }
+    .btn-buy-pkg {
+      background: transparent;
+      border: 1.5px solid #00ccff;
+      color: #00ccff;
+      padding: 5px 14px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: 0.25s;
+      white-space: nowrap;
+      box-shadow: 0 0 16px rgba(0, 200, 255, 0.04);
+      letter-spacing: 0.5px;
+    }
+    .btn-buy-pkg:hover {
+      background: #00ccff;
+      color: #0b0e14;
+      box-shadow: 0 0 40px rgba(0, 200, 255, 0.15);
+    }
+    .btn-buy-pkg:active {
+      transform: scale(0.92);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.35s;
+      padding: 20px;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-box {
+      background: rgba(10, 18, 32, 0.95);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(0, 255, 255, 0.15);
+      border-radius: 36px;
+      max-width: 400px;
+      width: 100%;
+      padding: 26px 20px 28px;
+      box-shadow: 0 0 80px rgba(0, 255, 255, 0.06), 0 0 160px rgba(0, 0, 0, 0.6);
+      transform: scale(0.92) translateY(20px);
+      transition: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal-overlay.open .modal-box {
+      transform: scale(1) translateY(0);
+    }
+    .modal-box h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      text-align: center;
+      color: #00ffff;
+      text-shadow: 0 0 20px #00ffff;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .modal-box .selected-name {
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: rgba(0, 255, 255, 0.04);
+      padding: 6px 12px;
+      border-radius: 30px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(0, 255, 255, 0.06);
+    }
+    .modal-box .order-summary {
+      background: rgba(0,0,0,0.25);
+      border-radius: 18px;
+      padding: 12px 14px;
+      margin: 12px 0;
+      border-left: 2px solid #00ffff;
+    }
+    .modal-box .order-summary div {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+    }
+    .modal-box .order-summary .label {
+      color: #88b0d0;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    .modal-box .order-summary .value {
+      font-weight: 700;
+      color: #f0f8ff;
+      font-size: 0.85rem;
+    }
+
+    .modal-box .guide-section {
+      margin: 16px 0 12px;
+      padding: 12px 14px;
+      background: rgba(0, 255, 255, 0.02);
+      border-radius: 18px;
+      border: 1px solid rgba(0, 255, 255, 0.04);
+    }
+    .modal-box .guide-section .guide-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #88b0d0;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .modal-box .guide-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .modal-box .guide-step:last-child {
+      margin-bottom: 0;
+    }
+    .modal-box .guide-step .step-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #00ffff;
+      min-width: 24px;
+      opacity: 0.6;
+    }
+    .modal-box .guide-step .step-content {
+      flex: 1;
+    }
+    .modal-box .guide-step .step-content .step-label {
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: #d0e0f0;
+    }
+    .modal-box .guide-step .step-content .step-desc {
+      font-size: 0.6rem;
+      color: #88aacc;
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .modal-box .msg-box {
+      background: #0a121e;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      border: 1px solid rgba(0, 255, 255, 0.08);
+      margin: 8px 0 14px;
+      word-break: break-word;
+      color: #b8d8ff;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .modal-actions button {
+      flex: 1 0 auto;
+      padding: 11px 0;
+      border: none;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.25s;
+      letter-spacing: 0.5px;
+    }
+    .btn-copy {
+      background: rgba(0, 255, 255, 0.06);
+      border: 1px solid rgba(0, 255, 255, 0.3) !important;
+      color: #00ffff;
+    }
+    .btn-copy:hover {
+      background: rgba(0, 255, 255, 0.15);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.08);
+    }
+    .btn-copy.copied {
+      background: rgba(0, 255, 100, 0.08);
+      border-color: #66ffaa !important;
+      color: #66ffaa;
+    }
+    .btn-zalo {
+      background: rgba(0, 102, 255, 0.08);
+      border: 1px solid rgba(0, 102, 255, 0.3) !important;
+      color: #66bbff;
+    }
+    .btn-zalo:hover {
+      background: rgba(0, 102, 255, 0.18);
+      box-shadow: 0 0 40px rgba(0, 102, 255, 0.08);
+    }
+    .btn-zalo.glow {
+      animation: zaloGlow 1.5s ease-in-out 2;
+    }
+    @keyframes zaloGlow {
+      0%, 100% { box-shadow: 0 0 0 rgba(0, 102, 255, 0); }
+      50% { box-shadow: 0 0 40px rgba(0, 102, 255, 0.25); }
+    }
+    .btn-close-modal {
+      background: rgba(255, 50, 80, 0.06);
+      border: 1px solid rgba(255, 50, 80, 0.2) !important;
+      color: #ff88aa;
+      flex: 0.3;
+    }
+    .btn-close-modal:hover {
+      background: rgba(255, 50, 80, 0.15);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0a1a28;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      padding: 12px 28px;
+      border-radius: 60px;
+      color: #00ffff;
+      font-weight: 600;
+      font-size: 0.8rem;
+      box-shadow: 0 0 60px rgba(0, 255, 255, 0.06);
+      z-index: 99999;
+      opacity: 0;
+      transition: 0.4s;
+      pointer-events: none;
+      max-width: 90%;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 440px;
+      background: rgba(10, 18, 30, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 40px;
+      padding: 6px 8px;
+      display: flex;
+      justify-content: space-around;
+      border: 1px solid rgba(0, 255, 255, 0.06);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0, 255, 255, 0.02);
+      z-index: 100;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+      border-radius: 30px;
+      background: transparent;
+      border: none;
+      color: #667a99;
+      font-size: 0.5rem;
+      font-weight: 600;
+      transition: 0.2s;
+      cursor: pointer;
+      flex: 1;
+      gap: 2px;
+      padding: 6px 0;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .nav-item .nav-indicator {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: transparent;
+      transition: 0.3s;
+    }
+    .nav-item.active {
+      color: #00ffff;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    }
+    .nav-item.active .nav-indicator {
+      background: #00ffff;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+    .nav-item:active {
+      transform: scale(0.92);
+    }
+
+    .no-result {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 16px;
+      font-size: 0.85rem;
+      color: #ff66aa;
+      background: rgba(255,0,80,0.02);
+      border-radius: 24px;
+      border: 1px dashed rgba(255,66,120,0.1);
+    }
+    .section-hidden {
+      display: none !important;
+    }
+
+    /* RESPONSIVE */
+    @media (min-width: 640px) {
+      .app-container { max-width: 600px; border-radius: 40px; padding: 20px 20px 90px; }
+      .product-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .bottom-nav { max-width: 560px; }
+      .brand-main { font-size: 2.4rem; }
+    }
+    @media (min-width: 1024px) {
+      .app-container { max-width: 780px; border-radius: 48px; padding: 24px 28px 90px; }
+      .product-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      .bottom-nav { max-width: 720px; }
+      .brand-main { font-size: 2.8rem; }
+    }
+    @media (max-width: 420px) {
+      .card .card-name { font-size: 0.7rem; }
+      .card .card-icon-wrap { width: 36px; height: 36px; font-size: 1rem; }
+      .package-card { flex-wrap: wrap; gap: 6px; }
+      .package-price { min-width: 40px; font-size: 0.85rem; }
+      .section-header .sec-name { font-size: 0.85rem; }
+      .modal-box { padding: 20px 16px; }
+      .live-stat .stat-number { font-size: 1rem; }
+      .brand-main { font-size: 1.6rem; }
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 255, 255, 0.15); border-radius: 20px; }
+  </style>
+</head>
+<body>
+  <div id="loading"><div class="loader-glow">KODER</div><div class="loader-ring"></div></div>
+  <div class="cyber-grid"></div>
+  <div class="scanline"></div>
+  <canvas id="particles-canvas"></canvas>
+  <canvas id="falling-particles"></canvas>
+
+  <div class="app-container" id="app">
+    <!-- HEADER -->
+    <div class="header">
+      <div class="brand-main">
+        KODER SHOP
+        <span class="shine"></span>
+      </div>
+      <div class="brand-sub">PREMIUM GAMING STORE</div>
+      <div class="header-status">
+        <span class="dot"></span> SYSTEM ONLINE · REAL-TIME SHOP STATUS
+      </div>
+    </div>
+
+    <!-- LIVE STATS -->
+    <div class="live-stats">
+      <div class="live-stat">
+        <div class="stat-number" id="onlineCount">128</div>
+        <div class="stat-label"><span class="stat-dot"></span>Người đang online mua hàng</div>
+        <div class="stat-sub">● Đang hoạt động</div>
+      </div>
+      <div class="live-stat">
+        <div class="stat-number" id="orderCount">24</div>
+        <div class="stat-label">Đơn thành công / phút</div>
+        <div class="stat-sub">● Xử lý tự động</div>
+      </div>
+      <div class="live-stat">
+        <div class="stat-number" id="successRate">99.8%</div>
+        <div class="stat-label">Tỷ lệ xử lý</div>
+        <div class="stat-sub">● Hệ thống ổn định</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+      </div>
+      <div class="filter-group" id="filterGroup">
+        <button class="filter-btn active" data-filter="all">Tất cả</button>
+        <button class="filter-btn" data-filter="FREE FIRE">Free Fire</button>
+        <button class="filter-btn" data-filter="LIÊN QUÂN">Liên Quân</button>
+        <button class="filter-btn" data-filter="8 BALL POOL">8 Ball Pool</button>
+        <button class="filter-btn" data-filter="PUBG">PUBG</button>
+      </div>
+    </div>
+
+    <div id="sectionsContainer"></div>
+
+    <div class="bottom-nav">
+      <button class="nav-item active" data-tab="home">
+        <span>Trang chủ</span>
+        <span class="nav-indicator"></span>
+      </button>
+      <button class="nav-item" data-tab="products">
+        <span>Sản phẩm</span>
+        <span class="nav-indicator"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <h2>XÁC NHẬN ĐƠN HÀNG</h2>
+      <div class="selected-name" id="modalProductName">MIGUL PRO - VN;GL</div>
+      <div class="order-summary">
+        <div><span class="label">Sản phẩm</span><span class="value" id="summaryName">—</span></div>
+        <div><span class="label">Gói</span><span class="value" id="summaryDuration">—</span></div>
+        <div><span class="label">Giá</span><span class="value" id="summaryPrice">—</span></div>
+      </div>
+
+      <div class="guide-section">
+        <div class="guide-title">Hướng dẫn đặt hàng</div>
+        <div class="guide-step">
+          <span class="step-num">01</span>
+          <div class="step-content">
+            <div class="step-label">Sao chép tin nhắn</div>
+            <div class="step-desc">Nhấn nút "SAO CHÉP TIN NHẮN" để sao chép nội dung đơn hàng.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <span class="step-num">02</span>
+          <div class="step-content">
+            <div class="step-label">Mở Zalo gửi admin</div>
+            <div class="step-desc">Sau khi sao chép, bấm "MỞ ZALO" và gửi tin nhắn đã sao chép cho KODER SUPPORT.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg-box" id="messageBox">🌟🌟🌟LẤY SẢN PHẨM ...</div>
+
+      <div class="modal-actions">
+        <button class="btn-copy" id="copyBtn">SAO CHÉP TIN NHẮN</button>
+        <button class="btn-zalo" id="zaloModalBtn">MỞ ZALO</button>
+        <button class="btn-close-modal" id="closeModalBtn">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">✓ Đã sao chép! Hãy bấm MỞ ZALO để gửi đơn hàng.</div>
+
+  <script>
+    (function() {
+      // ---------- DỮ LIỆU SẢN PHẨM ----------
+      const products = [
+        { id:1, name:'MIGUL BASIC - VN;GL', game:'FREE FIRE', icon:'fa-crosshairs', platform:'IOS • IPA', badge:'HOT', durations:[{label:'1 ngày', price:'50K', stock:12},{label:'7 ngày', price:'150K', stock:8},{label:'30 ngày', price:'350K', stock:5}] },
+        { id:2, name:'MIGUL PRO - VN;GL', game:'FREE FIRE', icon:'fa-bolt', platform:'IOS • IPA', badge:'VIP', durations:[{label:'1 giờ', price:'10K', stock:48, note:'CHỈ DÀNH CHO VN'},{label:'1 ngày', price:'70K', stock:22},{label:'7 ngày', price:'215K', stock:14},{label:'30 ngày', price:'450K', stock:11}] },
+        { id:3, name:'FLORK', game:'FREE FIRE', icon:'fa-skull', platform:'IOS • IPA', badge:'', durations:[{label:'30 ngày', price:'200K', stock:7}] },
+        { id:4, name:'SUDO TIPA', game:'FREE FIRE', icon:'fa-circle-nodes', platform:'IOS • IPA', badge:'', durations:[{label:'30 ngày', price:'170K', stock:9}] },
+        { id:5, name:'DRIP CLIENT - MENU ADR', game:'FREE FIRE', icon:'fa-droplet', platform:'ANDROID • APK', badge:'BEST SELLER', durations:[{label:'1 ngày', price:'30K', stock:18},{label:'7 ngày', price:'100K', stock:6},{label:'30 ngày', price:'200K', stock:4}] },
+        { id:6, name:'DRIP CLIENT - PROXY ADR', game:'FREE FIRE', icon:'fa-shield-halved', platform:'ANDROID • APK', badge:'', durations:[{label:'1 ngày', price:'25K', stock:15},{label:'7 ngày', price:'100K', stock:7},{label:'30 ngày', price:'170K', stock:3}] },
+        { id:7, name:'PROXY XITER IOS', game:'FREE FIRE', icon:'fa-mobile-screen', platform:'IOS • IPA', badge:'HOT', durations:[{label:'1 ngày', price:'20K', stock:20},{label:'7 ngày', price:'50K', stock:12},{label:'30 ngày', price:'100K', stock:8},{label:'Vĩnh viễn VPN', price:'250K', stock:3},{label:'3 tháng APP', price:'250K', stock:5}] },
+        { id:8, name:'CATE EXTERNAL TIPA', game:'FREE FIRE', icon:'fa-cat', platform:'IOS • IPA', badge:'', durations:[{label:'7 ngày', price:'50K', stock:10},{label:'30 ngày', price:'100K', stock:6}] },
+        { id:9, name:'AOV MENU', game:'LIÊN QUÂN', icon:'fa-sword', platform:'IOS • IPA', badge:'', durations:[{label:'1 giờ', price:'2K', stock:60},{label:'1 ngày', price:'20K', stock:30},{label:'7 ngày', price:'100K', stock:15},{label:'30 ngày', price:'200K', stock:8}] },
+        { id:10, name:'FLUORITE - 8 BALL POOL', game:'8 BALL POOL', icon:'fa-circle', platform:'IOS • IPA', badge:'VIP', durations:[{label:'1 ngày', price:'45K', stock:16},{label:'7 ngày', price:'140K', stock:9},{label:'31 ngày', price:'240K', stock:5}] },
+        { id:11, name:'DOLPHIN PUBGM', game:'PUBG', icon:'fa-bullseye', platform:'IOS • IPA', badge:'HOT', durations:[{label:'1 ngày', price:'20K', stock:25},{label:'7 ngày', price:'100K', stock:12},{label:'30 ngày', price:'200K', stock:6}] }
+      ];
+
+      // DOM refs
+      const sectionsContainer = document.getElementById('sectionsContainer');
+      const searchInput = document.getElementById('searchInput');
+      const filterBtns = document.querySelectorAll('.filter-btn');
+
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalProductName = document.getElementById('modalProductName');
+      const summaryName = document.getElementById('summaryName');
+      const summaryDuration = document.getElementById('summaryDuration');
+      const summaryPrice = document.getElementById('summaryPrice');
+      const messageBox = document.getElementById('messageBox');
+      const copyBtn = document.getElementById('copyBtn');
+      const zaloModalBtn = document.getElementById('zaloModalBtn');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      const toast = document.getElementById('toast');
+
+      const onlineCountEl = document.getElementById('onlineCount');
+      const orderCountEl = document.getElementById('orderCount');
+      const successRateEl = document.getElementById('successRate');
+
+      let currentFilter = 'all';
+      let currentSearch = '';
+      let openedProductId = null;
+      let currentOrderProduct = null;
+      let currentOrderPkg = null;
+
+      // ---------- LIVE STATS RANDOM ----------
+      const ONLINE_MIN = 64;
+      const ONLINE_MAX = 180;
+      let currentOnline = 128;
+      let currentOrders = 24;
+
+      function randomOnline() {
+        return Math.floor(Math.random() * (ONLINE_MAX - ONLINE_MIN + 1)) + ONLINE_MIN;
+      }
+
+      function updateLiveStats() {
+        let newOnline = currentOnline + Math.floor(Math.random() * 11) - 5;
+        if (newOnline < ONLINE_MIN) newOnline = ONLINE_MIN + Math.floor(Math.random() * 10);
+        if (newOnline > ONLINE_MAX) newOnline = ONLINE_MAX - Math.floor(Math.random() * 10);
+        currentOnline = newOnline;
+        onlineCountEl.textContent = currentOnline;
+
+        let newOrders = currentOrders + Math.floor(Math.random() * 5) - 2;
+        if (newOrders < 18) newOrders = 18 + Math.floor(Math.random() * 6);
+        if (newOrders > 32) newOrders = 32 - Math.floor(Math.random() * 4);
+        currentOrders = newOrders;
+        orderCountEl.textContent = currentOrders;
+
+        let base = 99.8;
+        let variation = (Math.random() - 0.5) * 0.4;
+        let rate = Math.min(100, Math.max(99.2, base + variation));
+        successRateEl.textContent = rate.toFixed(1) + '%';
+      }
+
+      setInterval(updateLiveStats, 12000 + Math.random() * 6000);
+      updateLiveStats();
+
+      // ---------- BUILD MESSAGE ----------
+      function buildMessage(productName, durationLabel) {
+        return `🌟🌟🌟LẤY SẢN PHẨM ${productName} - ${durationLabel} (admin KODER SUPPORT)🔥🔥🔥`;
+      }
+
+      // ---------- RENDER SECTIONS ----------
+      function renderSections() {
+        const gameGroups = {};
+        products.forEach(p => {
+          if (!gameGroups[p.game]) gameGroups[p.game] = [];
+          gameGroups[p.game].push(p);
+        });
+
+        let html = '';
+        const gameKeys = Object.keys(gameGroups);
+
+        const gameIconMap = {
+          'FREE FIRE': 'fa-fire',
+          'LIÊN QUÂN': 'fa-swords',
+          '8 BALL POOL': 'fa-circle',
+          'PUBG': 'fa-helmet-safety'
+        };
+
+        gameKeys.forEach(game => {
+          const productList = gameGroups[game];
+          const count = productList.length;
+
+          const filteredProducts = productList.filter(p => {
+            const matchSearch = p.name.toLowerCase().includes(currentSearch.toLowerCase()) || p.game.toLowerCase().includes(currentSearch.toLowerCase());
+            return matchSearch;
+          });
+
+          let cardsHtml = '';
+          if (filteredProducts.length === 0) {
+            cardsHtml = `<div class="no-result" style="grid-column:1/-1;">Không có sản phẩm</div>`;
+          } else {
+            filteredProducts.forEach(p => {
+              const badgeHtml = p.badge ? `<span class="badge">${p.badge}</span>` : '';
+              const isActive = (openedProductId === p.id);
+              let platformHtml = '';
+              if (p.platform) {
+                const isIos = p.platform.includes('IOS');
+                platformHtml = `<div class="card-platform ${isIos ? 'ios' : 'android'}">${isIos ? '<i class="fas fa-apple"></i> ' : ''}${p.platform}</div>`;
+              }
+              let nameParts = p.name.split(' - ');
+              let mainName = nameParts[0];
+              let subName = nameParts[1] || '';
+              const iconClass = p.icon || 'fa-gamepad';
+              cardsHtml += `
+                <div class="card ${isActive ? 'active-card' : ''}" data-id="${p.id}" data-game="${p.game}">
+                  ${badgeHtml}
+                  <div class="card-icon-wrap"><i class="fas ${iconClass}"></i></div>
+                  <div class="card-name">${mainName}</div>
+                  ${subName ? `<div class="card-sub">${subName}</div>` : ''}
+                  ${platformHtml}
+                  <div class="card-arrow">→</div>
+                  <div class="card-status">● AVAILABLE</div>
+                </div>
+              `;
+            });
+          }
+
+          let detailHtml = '';
+          if (openedProductId !== null) {
+            const openedProduct = products.find(p => p.id === openedProductId);
+            if (openedProduct && openedProduct.game === game) {
+              detailHtml = renderDetailPanel(openedProduct);
+            }
+          }
+
+          const gameIcon = gameIconMap[game] || 'fa-gamepad';
+          html += `
+            <div class="game-section" data-game="${game}">
+              <div class="section-header">
+                <div class="sec-left">
+                  <span class="sec-icon"><i class="fas ${gameIcon}"></i></span>
+                  <span class="sec-name">${game}</span>
+                </div>
+                <span class="sec-count">${filteredProducts.length} sản phẩm</span>
+              </div>
+              <div class="product-grid" data-game="${game}">
+                ${cardsHtml}
+                ${detailHtml}
+              </div>
+            </div>
+          `;
+        });
+
+        sectionsContainer.innerHTML = html;
+
+        // Events
+        document.querySelectorAll('.card').forEach(card => {
+          card.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-buy-pkg')) return;
+            const id = parseInt(this.dataset.id);
+            const product = products.find(p => p.id === id);
+            if (product) {
+              if (openedProductId === id) {
+                closeDetail();
+              } else {
+                openDetail(product);
+              }
+            }
+          });
+        });
+
+        document.querySelectorAll('.btn-buy-pkg').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const productId = parseInt(this.dataset.productId);
+            const label = this.dataset.label;
+            const price = this.dataset.price;
+            const product = products.find(p => p.id === productId);
+            if (product) {
+              openOrderModal(product, { label, price });
+            }
+          });
+        });
+
+        document.querySelectorAll('.close-detail').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeDetail();
+          });
+        });
+
+        applyFilterAndSearch();
+      }
+
+      // ---------- RENDER DETAIL ----------
+      function renderDetailPanel(product) {
+        let packagesHtml = '';
+        product.durations.forEach(d => {
+          const noteHtml = d.note ? `<span style="font-size:0.55rem;color:#ff99aa;margin-left:4px;">(${d.note})</span>` : '';
+          const stockText = d.stock !== undefined ? `${d.stock}` : '?';
+          packagesHtml += `
+            <div class="package-card">
+              <div class="package-left">
+                <div class="package-label">${d.label} ${noteHtml}</div>
+                <div class="package-stock">Kho: ${stockText}</div>
+              </div>
+              <div class="package-price">${d.price}</div>
+              <button class="btn-buy-pkg" data-product-id="${product.id}" data-label="${d.label}" data-price="${d.price}">
+                MUA
+              </button>
+            </div>
+          `;
+        });
+
+        return `
+          <div class="detail-panel open">
+            <div class="detail-wrapper">
+              <div class="detail-header">
+                <span class="detail-title">${product.name}</span>
+                <button class="close-detail">Đóng</button>
+              </div>
+              <div class="detail-grid">
+                ${packagesHtml}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // ---------- OPEN / CLOSE DETAIL ----------
+      function openDetail(product) {
+        openedProductId = product.id;
+        renderSections();
+        setTimeout(() => {
+          const section = document.querySelector(`.game-section[data-game="${product.game}"]`);
+          if (section) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      }
+
+      function closeDetail() {
+        openedProductId = null;
+        renderSections();
+      }
+
+      // ---------- FILTER + SEARCH ----------
+      function applyFilterAndSearch() {
+        const sections = document.querySelectorAll('.game-section');
+        sections.forEach(section => {
+          const game = section.dataset.game;
+          let showByFilter = (currentFilter === 'all' || game === currentFilter);
+          const cards = section.querySelectorAll('.card');
+          let hasMatch = false;
+          cards.forEach(card => {
+            const pId = parseInt(card.dataset.id);
+            const product = products.find(p => p.id === pId);
+            if (product) {
+              const matchSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase()) || product.game.toLowerCase().includes(currentSearch.toLowerCase());
+              if (matchSearch) hasMatch = true;
+            }
+          });
+          if (currentSearch.trim() === '') {
+            if (showByFilter) {
+              section.classList.remove('section-hidden');
+            } else {
+              section.classList.add('section-hidden');
+            }
+          } else {
+            if (showByFilter && hasMatch) {
+              section.classList.remove('section-hidden');
+            } else {
+              section.classList.add('section-hidden');
+            }
+          }
+        });
+      }
+
+      // ---------- MODAL ORDER ----------
+      function openOrderModal(product, pkg) {
+        if (!product || !pkg) return;
+        currentOrderProduct = product;
+        currentOrderPkg = pkg;
+        modalProductName.textContent = product.name;
+        summaryName.textContent = product.name;
+        summaryDuration.textContent = pkg.label;
+        summaryPrice.textContent = pkg.price;
+        const msg = buildMessage(product.name, pkg.label);
+        messageBox.textContent = msg;
+        copyBtn.innerHTML = 'SAO CHÉP TIN NHẮN';
+        copyBtn.classList.remove('copied');
+        zaloModalBtn.classList.remove('glow');
+        modalOverlay.classList.add('open');
+      }
+
+      function closeOrderModal() {
+        modalOverlay.classList.remove('open');
+        currentOrderProduct = null;
+        currentOrderPkg = null;
+      }
+
+      closeModalBtn.addEventListener('click', closeOrderModal);
+      modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) closeOrderModal();
+      });
+
+      // ---------- COPY ----------
+      copyBtn.addEventListener('click', function() {
+        const text = messageBox.textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            onCopySuccess();
+          });
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          onCopySuccess();
+        }
+      });
+
+      function onCopySuccess() {
+        copyBtn.innerHTML = '✓ ĐÃ SAO CHÉP';
+        copyBtn.classList.add('copied');
+        zaloModalBtn.classList.add('glow');
+        showToast('✓ Đã sao chép! Hãy bấm MỞ ZALO để gửi đơn hàng.');
+      }
+
+      // ---------- ZALO ----------
+      function openZalo() {
+        window.open('https://zalo.me/0987201932', '_blank');
+      }
+      zaloModalBtn.addEventListener('click', openZalo);
+
+      // ---------- TOAST ----------
+      let toastTimer;
+      function showToast(msg) {
+        toast.textContent = msg || '✓ Đã sao chép! Hãy bấm MỞ ZALO để gửi đơn hàng.';
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+
+      // ---------- FILTER ----------
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentFilter = this.dataset.filter;
+          if (openedProductId !== null) closeDetail();
+          renderSections();
+        });
+      });
+
+      // ---------- SEARCH ----------
+      searchInput.addEventListener('input', function() {
+        currentSearch = this.value.trim();
+        if (openedProductId !== null) closeDetail();
+        renderSections();
+      });
+
+      // ---------- BOTTOM NAV ----------
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+          document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+
+      // ---------- INIT ----------
+      renderSections();
+
+      // ---------- FALLING PARTICLES ----------
+      const fallingCanvas = document.getElementById('falling-particles');
+      const fctx = fallingCanvas.getContext('2d');
+      let fw, fh;
+      let fallingParticles = [];
+
+      function resizeFalling() {
+        fw = fallingCanvas.width = window.innerWidth;
+        fh = fallingCanvas.height = window.innerHeight;
+      }
+      resizeFalling();
+      window.addEventListener('resize', resizeFalling);
+
+      function getParticleCount() {
+        if (fw < 400) return 25;
+        if (fw < 768) return 40;
+        return 55;
+      }
+
+      function initFallingParticles() {
+        const count = getParticleCount();
+        fallingParticles = [];
+        for (let i = 0; i < count; i++) {
+          fallingParticles.push({
+            x: Math.random() * fw,
+            y: Math.random() * fh - fh,
+            size: Math.random() * 2 + 0.5,
+            speed: Math.random() * 0.7 + 0.2,
+            drift: (Math.random() - 0.5) * 0.25,
+            opacity: Math.random() * 0.4 + 0.1,
+            glow: Math.random() > 0.7 ? 0.2 : 0
+          });
+        }
+      }
+      initFallingParticles();
+
+      function drawFallingParticles() {
+        fctx.clearRect(0, 0, fw, fh);
+
+        fallingParticles.forEach(p => {
+          p.y += p.speed;
+          p.x += p.drift;
+
+          if (p.y > fh + 20) {
+            p.y = -20;
+            p.x = Math.random() * fw;
+            p.size = Math.random() * 2 + 0.5;
+            p.speed = Math.random() * 0.7 + 0.2;
+            p.drift = (Math.random() - 0.5) * 0.25;
+            p.opacity = Math.random() * 0.4 + 0.1;
+            p.glow = Math.random() > 0.7 ? 0.2 : 0;
+          }
+
+          if (p.x < -10) p.x = fw + 10;
+          if (p.x > fw + 10) p.x = -10;
+
+          fctx.beginPath();
+          fctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          fctx.fillStyle = `rgba(0, 200, 255, ${p.opacity})`;
+          fctx.fill();
+
+          if (p.glow > 0) {
+            fctx.shadowColor = 'rgba(0, 200, 255, 0.2)';
+            fctx.shadowBlur = 12;
+            fctx.fill();
+            fctx.shadowBlur = 0;
+          }
+        });
+
+        requestAnimationFrame(drawFallingParticles);
+      }
+      drawFallingParticles();
+
+      let resizeTimeout;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          resizeFalling();
+          initFallingParticles();
+        }, 300);
+      });
+
+      // ---------- BACKGROUND PARTICLES ----------
+      const canvas = document.getElementById('particles-canvas');
+      const ctx = canvas.getContext('2d');
+      let w, h;
+      function resizeCanvas() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      const particles = [];
+      for (let i=0; i<18; i++) {
+        particles.push({
+          x: Math.random() * w, y: Math.random() * h,
+          vx: (Math.random()-0.5)*0.12, vy: (Math.random()-0.5)*0.12,
+          r: Math.random()*1+0.3, alpha: Math.random()*0.15+0.02
+        });
+      }
+      function drawParticles() {
+        ctx.clearRect(0,0,w,h);
+        particles.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x<0||p.x>w) p.vx *= -1;
+          if (p.y<0||p.y>h) p.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+          ctx.fillStyle = `rgba(0, 200, 255, ${p.alpha})`;
+          ctx.fill();
+        });
+        requestAnimationFrame(drawParticles);
+      }
+      drawParticles();
+
+      // ---------- LOADING ----------
+      setTimeout(() => document.getElementById('loading').classList.add('hide'), 700);
+    })();
+  </script>
+</body>
+</html>
