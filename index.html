@@ -826,8 +826,8 @@ body {
       setInterval(updateLiveStats, 12000+Math.random()*6000); updateLiveStats();
 
       // ---------- BUILD MESSAGE ----------
-      function buildMessage(productName, durationLabel){
-        return `🌟🌟🌟LẤY SẢN PHẨM ${productName} - ${durationLabel} (admin KODER SUPPORT)🔥🔥🔥`;
+      function buildMessage(productName, durationLabel, price){
+        return `🌟🌟🌟LẤY SẢN PHẨM ${productName} - ${durationLabel} - ${price} (admin KODER SUPPORT)🔥🔥🔥`;
       }
 
       // ---------- RENDER SECTIONS ----------
@@ -995,7 +995,7 @@ body {
         summaryName.textContent = product.name;
         summaryDuration.textContent = pkg.label;
         summaryPrice.textContent = pkg.price;
-        const msg = buildMessage(product.name, pkg.label);
+        const msg = buildMessage(product.name, pkg.label, pkg.price);
         orderMessageBox.innerHTML = `<div class="msg-label"><i class="fas fa-star" style="color:#ffd700;"></i> Nội dung đơn hàng</div>${msg}`;
 
         productModal.classList.remove('open');
