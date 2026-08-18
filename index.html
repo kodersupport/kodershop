@@ -921,6 +921,9 @@ body {
 </head>
 <body>
 
+<!-- Background music: 50% volume, loop -->
+<audio id="bg-music" src="snaptik.vn_7540542079605230868.mp3" loop preload="auto"></audio>
+
 <div class="koder-particles" id="koderParticles"></div>
 <header class="koder-brand">
   <div class="koder-brand-line"></div>
@@ -1767,7 +1770,19 @@ function openOrderModal(product, pkg) {
     } catch (e) {}
   }
 
+  // Background music: 50% volume + loop (đã set loop trên thẻ audio)
+  const bgMusic = document.getElementById('bg-music');
+  if (bgMusic) {
+    bgMusic.volume = 0.5;
+    // Thử autoplay (có thể bị trình duyệt chặn nếu chưa có tương tác)
+    bgMusic.play().catch(() => {});
+  }
+
   document.addEventListener('pointerdown', function(e) {
+    // Bắt đầu nhạc nền khi người dùng chạm lần đầu (để vượt qua chính sách autoplay)
+    if (bgMusic && bgMusic.paused) {
+      bgMusic.play().catch(() => {});
+    }
     clickSound();
     const ripple = document.createElement('span');
     ripple.className = 'koder-screen-ripple';
