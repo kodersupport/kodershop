@@ -916,6 +916,44 @@ body {
 <style>
 /* Ẩn thanh Trang chủ / Sản phẩm */
 .bottom-nav { display:none !important; visibility:hidden !important; height:0 !important; overflow:hidden !important; pointer-events:none !important; }
+
+/* Nút bật/tắt nhạc nền */
+.music-toggle {
+  position: fixed !important;
+  top: 70px !important;
+  right: 14px !important;
+  z-index: 99999 !important;
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(0,255,255,0.35) !important;
+  background: rgba(8,14,24,0.92) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  color: #00ffff !important;
+  font-size: 1.15rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.45), 0 0 22px rgba(0,255,255,0.18) !important;
+  transition: transform 0.2s, background 0.2s, border-color 0.2s, color 0.2s !important;
+  -webkit-tap-highlight-color: transparent !important;
+  touch-action: manipulation !important;
+  user-select: none !important;
+}
+.music-toggle:active {
+  transform: scale(0.88) !important;
+}
+.music-toggle.off {
+  color: #8899aa !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  background: rgba(8,14,24,0.8) !important;
+}
+.music-toggle i {
+  pointer-events: none !important;
+}
 </style>
 
 </head>
@@ -923,6 +961,11 @@ body {
 
 <!-- Background music: 50% volume, loop -->
 <audio id="bg-music" src="snaptik.vn_7540542079605230868.mp3" loop preload="auto"></audio>
+
+<!-- Nút bật/tắt nhạc -->
+<button class="music-toggle" id="musicToggle" title="Bật/Tắt nhạc">
+  <i class="fas fa-volume-high"></i>
+</button>
 
 <div class="koder-particles" id="koderParticles"></div>
 <header class="koder-brand">
@@ -1770,19 +1813,63 @@ function openOrderModal(product, pkg) {
     } catch (e) {}
   }
 
-  // Background music: 50% volume + loop (đã set loop trên thẻ audio)
+  // Background music: 50% volume + loop + nút bật/tắt
   const bgMusic = document.getElementById('bg-music');
+  const musicToggle = document.getElementById('musicToggle');
+  let musicEnabled = true; // mặc định bật
+
+  function updateMusicUI() {
+    if (!musicToggle) return;
+    if (musicEnabled && bgMusic && !bgMusic.paused) {
+      musicToggle.classList.remove('off');
+      musicToggle.innerHTML = '<i class="fas fa-volume-high"></i>';
+    } else {
+      musicToggle.classList.add('off');
+      musicToggle.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+    }
+  }
+
   if (bgMusic) {
     bgMusic.volume = 0.5;
-    // Thử autoplay (có thể bị trình duyệt chặn nếu chưa có tương tác)
-    bgMusic.play().catch(() => {});
+    // Thử autoplay
+    bgMusic.play().then(() => {
+      musicEnabled = true;
+      updateMusicUI();
+    }).catch(() => {
+      musicEnabled = false;
+      updateMusicUI();
+    });
+  }
+
+  if (musicToggle) {
+    function toggleMusic(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!bgMusic) return;
+
+      if (bgMusic.paused) {
+        bgMusic.play().then(() => {
+          musicEnabled = true;
+          updateMusicUI();
+        }).catch(() => {});
+      } else {
+        bgMusic.pause();
+        musicEnabled = false;
+        updateMusicUI();
+      }
+    }
+    musicToggle.addEventListener('click', toggleMusic);
+    musicToggle.addEventListener('touchend', toggleMusic, { passive: false });
   }
 
   document.addEventListener('pointerdown', function(e) {
-    // Bắt đầu nhạc nền khi người dùng chạm lần đầu (để vượt qua chính sách autoplay)
-    if (bgMusic && bgMusic.paused) {
-      bgMusic.play().catch(() => {});
+    // Chỉ tự phát lần đầu nếu người dùng chưa tắt nhạc
+    if (bgMusic && bgMusic.paused && musicEnabled) {
+      bgMusic.play().then(() => updateMusicUI()).catch(() => {});
     }
+    // Không phát click sound khi bấm nút nhạc
+    if (e.target.closest('#musicToggle')) return;
+
     clickSound();
     const ripple = document.createElement('span');
     ripple.className = 'koder-screen-ripple';
